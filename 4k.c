@@ -491,12 +491,12 @@ static void flip_pos(Position *const restrict pos) {
     return true;
   }
   const u64 blockers = pos->colour[0] | pos->colour[1];
-  return knight(sq) & theirs & pos->pieces[Knight] ||
-         bishop(sq, blockers) & theirs &
-             (pos->pieces[Bishop] | pos->pieces[Queen]) ||
-         rook(sq, blockers) & theirs &
-             (pos->pieces[Rook] | pos->pieces[Queen]) ||
-         king(sq) & theirs & pos->pieces[King];
+
+  for (int i = Knight; i <= King; i++)
+    if (get_mobility(sq, i, pos) & pos->pieces[i] & theirs)
+      return true;
+
+  return false;
 }
 
 static i32 makemove(Position *const restrict pos,
